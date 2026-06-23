@@ -1978,7 +1978,9 @@ bool rawsend(const struct sockaddr* dst,uint32_t fwmark,const char *ifout,const 
 	ssize_t bytes;
 	int sock=rawsend_socket(dst->sa_family);
 	if (sock==-1) return false;
+#if defined(BSD) || defined(__linux__)
 	if (!set_socket_fwmark(sock,fwmark)) return false;
+#endif
 	int salen = dst->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6);
 	struct sockaddr_storage dst2;
 	memcpy(&dst2,dst,salen);
