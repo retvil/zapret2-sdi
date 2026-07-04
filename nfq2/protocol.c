@@ -651,7 +651,7 @@ bool TLSAdvanceToHostInSNI(const uint8_t **ext, size_t *elen, size_t *slen)
 	if (*elen < 5 || (*ext)[2] != 0) return false;
 	uint16_t nll = pntoh16(*ext);
 	*slen = pntoh16(*ext + 3);
-	if (nll<(*slen+3) || *slen > *elen-5) return false;
+	if (nll<(*slen+3) || nll>(*elen-2)) return false;
 	*ext += 5; *elen -= 5;
 	return true;
 }
