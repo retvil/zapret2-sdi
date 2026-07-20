@@ -146,13 +146,13 @@ again:
 			{
 				if (elem->oneshot)
 				{
-					DLOG("timer: '%s' deleted because of out of memory\n", elem->str);
+					DLOG_ERR("timer: '%s' deleted because of out of memory\n", elem->str);
 					TimerPoolDel(pp, elem);
 					elem = NULL;
 				}
 				else
 				{
-					DLOG("timer: '%s' skipped because of out of memory\n", elem->str);
+					DLOG_ERR("timer: '%s' skipped because of out of memory\n", elem->str);
 					elem->bt_next = bt + elem->period;
 				}
 			}
