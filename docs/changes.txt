@@ -312,3 +312,5 @@ v0.9.4.3
 
 * nfqws2: accept string or function in timer_set(). remember function as a function, not as a string.
 * nfqws2: limit delayed packet queue to 64 packets (anti-ddos)
+* init.d: add udp ports range 19294-19344 to discord media
+
