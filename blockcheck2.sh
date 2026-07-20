@@ -942,22 +942,36 @@ pktws_ipt_unprepare_udp()
 
 pktws_start()
 {
+	local pidfile
 	case "$UNAME" in
 		Linux)
 			"$NFQWS2" --uid $WS_UID:$WS_GID --fwmark=$DESYNC_MARK --qnum=$QNUM --lua-init=@"$ZAPRET_BASE/lua/zapret-lib.lua" --lua-init=@"$ZAPRET_BASE/lua/zapret-antidpi.lua" "$@" >/dev/null &
+			PID=$!
+			# give some time to initialize
+			minsleep
 			;;
 		FreeBSD|OpenBSD)
 			"$DVTWS2" --port=$IPFW_DIVERT_PORT --lua-init=@"$ZAPRET_BASE/lua/zapret-lib.lua" --lua-init=@"$ZAPRET_BASE/lua/zapret-antidpi.lua" "$@" >/dev/null &
+			PID=$!
+			# give some time to initialize
+			minsleep
 			;;
 		CYGWIN)
+			pidfile="/tmp/blockcheck_cygpid_$$"
+			# avoid fork
 			# allow multiple PKTWS instances with the same wf filter but different ipset
 			# some methods require empty acks
-			"$WINWS2" --wf-dup-check=0 --wf-tcp-empty=1 $WF --ipset="$IPSET_FILE" --lua-init=@"$ZAPRET_BASE/lua/zapret-lib.lua" --lua-init=@"$ZAPRET_BASE/lua/zapret-antidpi.lua" "$@" >/dev/null &
+			cygstart --hide "$WINWS2" --pidfile="$pidfile" --wf-dup-check=0 --wf-tcp-empty=1 $WF --ipset="$IPSET_FILE" --lua-init=@"$ZAPRET_BASE/lua/zapret-lib.lua" --lua-init=@"$ZAPRET_BASE/lua/zapret-antidpi.lua" "$@" >/dev/null &
+			# give some time to initialize
+			minsleep
+			if [ -f "$pidfile" ]; then
+				read PID <"$pidfile"
+				rm -f "$pidfile"
+			else
+				echo "pktws failed to initialize within specified time !!"
+			fi
 			;;
 	esac
-	PID=$!
-	# give some time to initialize
-	minsleep
 }
 ws_kill()
 {
