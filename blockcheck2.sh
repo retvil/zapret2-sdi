@@ -74,9 +74,28 @@ killwait()
 {
 	# $1 - signal (-9, -2, ...)
 	# $2 - pid
+
+	local n
+
 	kill $1 $2
-	# suppress job kill message
-	wait $2 2>/dev/null
+	case "$UNAME" in
+		CYGWIN)
+			n=1
+			# wait only waits for child processes. cygstart makes process non-child
+			while kill -0 "$PID" 2>/dev/null; do
+				msleep 20
+				n = $(($n+1))
+				[ $n -gt 50 ] && {
+					echo "could not kill pktws within specified time !!"
+					break
+				}
+			done
+			;;
+		*)
+			# suppress job kill message
+			wait $2 2>/dev/null
+			;;
+	esac
 }
 
 exitp()
