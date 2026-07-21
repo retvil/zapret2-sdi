@@ -84,7 +84,7 @@ killwait()
 			# wait only waits for child processes. cygstart makes process non-child
 			while kill -0 "$2" 2>/dev/null; do
 				msleep 20
-				n = $(($n+1))
+				n=$(($n+1))
 				[ $n -gt 50 ] && {
 					echo "could not kill pktws within specified time !!"
 					break
