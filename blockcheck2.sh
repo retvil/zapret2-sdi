@@ -77,9 +77,10 @@ killwait()
 
 	local n
 
-	kill $1 $2
 	case "$UNAME" in
 		CYGWIN)
+			# do not use builtin bash kill if run under bash
+			/bin/kill $1 $2
 			n=1
 			# wait only waits for child processes. cygstart makes process non-child
 			while kill -0 "$2" 2>/dev/null; do
@@ -92,6 +93,7 @@ killwait()
 			done
 			;;
 		*)
+			kill $1 $2
 			# suppress job kill message
 			wait $2 2>/dev/null
 			;;
@@ -994,8 +996,12 @@ pktws_start()
 }
 ws_kill()
 {
+	local sig
 	[ -z "$PID" ] || {
-		killwait -9 $PID 2>/dev/null
+		sig=-9
+		# use fast kill using TerminateProcess() in cygwin
+		[ "$UNAME" = "CYGWIN" ] && sig=-f
+		killwait $sig $PID 2>/dev/null
 		PID=
 	}
 }
