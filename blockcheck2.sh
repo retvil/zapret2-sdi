@@ -1915,6 +1915,7 @@ unset WF
 trap sigint INT
 trap sigsilent PIPE
 trap sigsilent HUP
+trap sigsilent TERM
 for dom in $DOMAINS; do
 	for IPV in $IPVS; do
 		configure_ip_version
@@ -1928,6 +1929,7 @@ for dom in $DOMAINS; do
 		[ "$ENABLE_HTTP3" = 1 ] && check_domain_http3 $dom
 	done
 done
+trap - TERM
 trap - HUP
 trap - PIPE
 trap - INT
