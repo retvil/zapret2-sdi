@@ -314,3 +314,7 @@ v0.9.4.3
 * nfqws2: limit delayed packet queue to 64 packets (anti-ddos)
 * init.d: add udp ports range 19294-19344 to discord media
 * blockcheck2: use cygstart in windows to avoid fork problems (without cygwin rebase)
+
+1.0.4
+
+* blockcheck2: fix killwait in cygwin after cygstart implementation

@@ -4600,7 +4600,7 @@ This is a basic signature detector. If the C code does not recognize the protoco
 #### cond_tcp_has_ts
 
 ```
-function cond_tcp_ts(desync)
+function cond_tcp_has_ts(desync)
 ```
 
 Returns `true` if the dissect is tcp and has tcp timestamp option.
